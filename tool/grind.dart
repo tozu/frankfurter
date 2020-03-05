@@ -27,7 +27,7 @@ void test() => true;
 @Task('Automatically publishes this package if the pubspec version increases')
 void autoPublish() async {
   final credentials = grind_publish.Credentials.fromEnvironment();
-  await grind_publish.autoPublish('fankfurter', credentials);
+  await grind_publish.autoPublish('frankfurter', credentials);
 }
 
 /// Setup grinder and logging.
