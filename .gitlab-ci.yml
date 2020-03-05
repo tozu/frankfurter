@@ -1,0 +1,18 @@
+image: google/dart:2
+
+before_script:
+- export PATH="$PATH":"~/.pub-cache/bin"
+- pub global activate grinder
+- pub get
+
+test:
+  stage: test
+  script:
+    - grind test
+
+publish:
+  stage: deploy
+  script:
+  - grind auto-publish
+  only:
+  - master@exitlive/frankfurter

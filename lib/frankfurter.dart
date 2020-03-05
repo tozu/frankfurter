@@ -8,11 +8,11 @@ const defaultUrl = 'https://www.frankfurter.app/';
 class Frankfurter {
   /// Defaults to https://www.frankfurter.app/
   final Uri url;
-  final http.Client _client;
+  final http.Client client;
 
   Frankfurter({Uri url, http.Client client})
-      : this.url = url ?? Uri.parse(defaultUrl),
-        this._client = client;
+      : url = url ?? Uri.parse(defaultUrl),
+        client = client;
 
   Future<List<Rate>> latest({@required Currency from, Set<Currency> to}) async {
     Currency;
@@ -34,14 +34,14 @@ class Frankfurter {
     }
   }
 
-  /// Uses the provided [_client] if available, or creates a new one that gets
+  /// Uses the provided [client] if available, or creates a new one that gets
   /// closed immediately after use.
   Future<T> _withClient<T>(Future<T> Function(http.Client) fn) async {
-    var client = _client ?? http.Client();
+    var client = this.client ?? http.Client();
     try {
       return await fn(client);
     } finally {
-      if (_client == null) {
+      if (client == null) {
         client.close();
       }
     }
@@ -68,9 +68,11 @@ class Currency {
   const Currency._(this.code);
 
   @override
-  bool operator ==(Object other) =>
-      other is Currency && other.code == this.code;
+  bool operator ==(Object other) => other is Currency && other.code == code;
 
   @override
   int get hashCode => code.hashCode;
+
+  @override
+  String toString() => code;
 }
