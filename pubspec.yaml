@@ -1,6 +1,7 @@
 name: frankfurter
 version: 0.0.1
 description: A dart library to use the fankfurter.app api which provides currency exchange rates
+homepage: https://gitlab.com/exitlive/frankfurter
 environment:
   sdk: ">=2.7.0 <3.0.0"
 dependencies:
