@@ -50,7 +50,7 @@ void main() {
         _setupClientAnswer();
         final cacheDuration = Duration(milliseconds: 50);
         var frank = Frankfurter(client: client, cacheDuration: cacheDuration);
-        var rate = await frank.getRate(eur, usd);
+        var rate = await frank.getRate(from: eur, to: usd);
         expect(rate.rate, 1.1122);
         verify(client.get(any)).called(1);
       });
@@ -58,15 +58,15 @@ void main() {
         _setupClientAnswer();
         final cacheDuration = Duration(milliseconds: 50);
         var frank = Frankfurter(client: client, cacheDuration: cacheDuration);
-        var rate = await frank.getRate(eur, usd);
+        var rate = await frank.getRate(from: eur, to: usd);
         expect(rate.rate, 1.1122);
         verify(client.get(any)).called(1);
 
         _setupClientAnswer(modifiedRates);
 
-        rate = await frank.getRate(eur, usd);
-        rate = await frank.getRate(eur, usd);
-        rate = await frank.getRate(eur, usd);
+        rate = await frank.getRate(from: eur, to: usd);
+        rate = await frank.getRate(from: eur, to: usd);
+        rate = await frank.getRate(from: eur, to: usd);
         expect(rate.rate, 1.1122);
 
         /// Not being called again.
@@ -74,7 +74,7 @@ void main() {
 
         await Future.delayed(cacheDuration);
 
-        rate = await frank.getRate(eur, usd);
+        rate = await frank.getRate(from: eur, to: usd);
         expect(rate.rate, 9.9);
 
         /// Not being called again.
@@ -84,10 +84,12 @@ void main() {
         _setupClientAnswer();
         final cacheDuration = Duration(milliseconds: 50);
         var frank = Frankfurter(client: client, cacheDuration: cacheDuration);
-        expect((await frank.getRate(eur, usd)).rate, 1.1122);
-        expect((await frank.getRate(eur, gbp)).rate, 0.87113);
-        expect((await frank.getRate(eur, Currency('JPY'))).rate, 119.82);
-        expect((await frank.getRate(eur, Currency('SEK'))).rate, 10.6063);
+        expect((await frank.getRate(from: eur, to: usd)).rate, 1.1122);
+        expect((await frank.getRate(from: eur, to: gbp)).rate, 0.87113);
+        expect(
+            (await frank.getRate(from: eur, to: Currency('JPY'))).rate, 119.82);
+        expect((await frank.getRate(from: eur, to: Currency('SEK'))).rate,
+            10.6063);
         verify(client.get(any)).called(1);
       });
     });

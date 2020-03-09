@@ -46,7 +46,7 @@ class Frankfurter {
   /// Uses caching to avoid fetching the rate every time.
   ///
   /// To set the cache duration see [cacheDuration].
-  Future<Rate> getRate(Currency from, Currency to) async {
+  Future<Rate> getRate({@required Currency from, @required Currency to}) async {
     // Create a fake rate so we get a [_Cache] object with the right id.
     final fakeCache = _Cache(Rate(from, to, 1.0));
     var cache = _cache.lookup(fakeCache);
