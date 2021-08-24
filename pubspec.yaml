@@ -12,6 +12,8 @@ dev_dependencies:
   test: ^1.17.11
   mockito: ^5.0.15
   grinder: ^0.9.0
-  grind_publish: ^2.0.0
+  grind_publish:
+    git:
+      https://gitlab.com/MalcolmMielle/grind-publish.git
   pedantic: ^1.11.1
   build_runner: ^2.1.1
