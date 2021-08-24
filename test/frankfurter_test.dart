@@ -2,18 +2,20 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:frankfurter/frankfurter.dart';
+import 'package:mockito/annotations.dart';
 import 'package:test/test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
 
 import 'example_data.dart' as data;
+import 'frankfurter_test.mocks.dart';
 
-class MockClient extends Mock implements http.Client {}
-
+// class MockClient extends Mock implements http.Client {}
+@GenerateMocks([http.Client])
 void main() {
   group('Frankurter', () {
-    Frankfurter frank;
-    http.Client client;
+    late Frankfurter frank;
+    late MockClient client;
 
     final eur = Currency('EUR');
     final usd = Currency('USD');
