@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:frankfurter/frankfurter.dart';
 import 'package:test/test.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:http/http.dart' as http;
 
 import 'example_data.dart' as data;
@@ -12,8 +12,8 @@ class MockClient extends Mock implements http.Client {}
 
 void main() {
   group('Frankurter', () {
-    Frankfurter frank;
-    http.Client client;
+    late Frankfurter frank;
+    late http.Client client;
 
     final eur = Currency('EUR');
     final usd = Currency('USD');
@@ -23,27 +23,31 @@ void main() {
     _map['rates'].keys.forEach((key) => _map['rates'][key] = 9.9);
     final modifiedRates = jsonEncode(_map);
 
+    setUpAll(() {
+      registerFallbackValue(Uri());
+    });
     setUp(() {
       client = MockClient();
       frank = Frankfurter(client: client);
     });
 
     void _setupClientAnswer([String jsonData = data.fromEur]) {
-      when(client.get(any)).thenAnswer(
+      when(() => client.get(any())).thenAnswer(
           (req) => Future.value(http.Response(jsonData, HttpStatus.ok)));
     }
 
     test('.latest() makes a request to the right URL', () async {
       _setupClientAnswer();
       await frank.latest(from: eur);
-      verify(client.get(Uri.parse('${defaultUrl}latest?from=EUR'))).called(1);
+      verify(() => client.get(Uri.parse('${defaultUrl}latest?from=EUR')))
+          .called(1);
 
       await frank.latest(
         from: eur,
         to: {gbp, usd},
       );
-      verify(client.get(Uri.parse('${defaultUrl}latest?from=EUR&to=GBP%2CUSD')))
-          .called(1);
+      verify(() => client.get(
+          Uri.parse('${defaultUrl}latest?from=EUR&to=GBP%2CUSD'))).called(1);
     });
     group('.getRate()', () {
       test('gets the rate from the `latest()` response', () async {
@@ -52,7 +56,7 @@ void main() {
         var frank = Frankfurter(client: client, cacheDuration: cacheDuration);
         var rate = await frank.getRate(from: eur, to: usd);
         expect(rate.rate, 1.1122);
-        verify(client.get(any)).called(1);
+        verify(() => client.get(any())).called(1);
       });
       test('uses cache for subsequent calls', () async {
         _setupClientAnswer();
@@ -60,7 +64,7 @@ void main() {
         var frank = Frankfurter(client: client, cacheDuration: cacheDuration);
         var rate = await frank.getRate(from: eur, to: usd);
         expect(rate.rate, 1.1122);
-        verify(client.get(any)).called(1);
+        verify(() => client.get(any())).called(1);
 
         _setupClientAnswer(modifiedRates);
 
@@ -70,7 +74,7 @@ void main() {
         expect(rate.rate, 1.1122);
 
         /// Not being called again.
-        verifyNever(client.get(any));
+        verifyNever(() => client.get(any()));
 
         await Future.delayed(cacheDuration);
 
@@ -78,7 +82,7 @@ void main() {
         expect(rate.rate, 9.9);
 
         /// Not being called again.
-        verify(client.get(any)).called(1);
+        verify(() => client.get(any())).called(1);
       });
       test('uses the same recent() result for different currencies', () async {
         _setupClientAnswer();
@@ -90,7 +94,7 @@ void main() {
             (await frank.getRate(from: eur, to: Currency('JPY'))).rate, 119.82);
         expect((await frank.getRate(from: eur, to: Currency('SEK'))).rate,
             10.6063);
-        verify(client.get(any)).called(1);
+        verify(() => client.get(any())).called(1);
       });
     });
   });

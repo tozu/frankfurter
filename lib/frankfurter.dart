@@ -8,18 +8,17 @@ const defaultUrl = 'https://www.frankfurter.app/';
 class Frankfurter {
   /// Defaults to [defaultUrl]
   final Uri url;
-  final http.Client client;
+  final http.Client? client;
   final Duration cacheDuration;
 
   final _cache = <_Cache>{};
 
-  Frankfurter({Uri url, Duration cacheDuration, http.Client client})
+  Frankfurter({Uri? url, Duration? cacheDuration, this.client})
       : url = url ?? Uri.parse(defaultUrl),
-        cacheDuration = cacheDuration ?? Duration(hours: 12),
-        client = client;
+        cacheDuration = cacheDuration ?? Duration(hours: 12);
 
   /// Returns a list of the latest rates.
-  Future<List<Rate>> latest({@required Currency from, Set<Currency> to}) async {
+  Future<List<Rate>> latest({required Currency from, Set<Currency>? to}) async {
     Currency;
 
     final url = this.url.replace(path: 'latest', queryParameters: {
@@ -32,7 +31,7 @@ class Frankfurter {
       final ratesMap = (decoded['rates'] as Map).cast<String, num>();
       final rates = ratesMap.keys
           .map<Rate>(
-              (code) => Rate(from, Currency(code), ratesMap[code].toDouble()))
+              (code) => Rate(from, Currency(code), ratesMap[code]!.toDouble()))
           .toList();
 
       _cache.addAll(rates.map((rate) => _Cache(rate)));
@@ -46,7 +45,7 @@ class Frankfurter {
   /// Uses caching to avoid fetching the rate every time.
   ///
   /// To set the cache duration see [cacheDuration].
-  Future<Rate> getRate({@required Currency from, @required Currency to}) async {
+  Future<Rate> getRate({required Currency from, required Currency to}) async {
     // Create a fake rate so we get a [_Cache] object with the right id.
     final fakeCache = _Cache(Rate(from, to, 1.0));
     var cache = _cache.lookup(fakeCache);
@@ -61,7 +60,7 @@ class Frankfurter {
       _cache.addAll(latest.map((rate) => _Cache(rate)));
       cache = _cache.lookup(fakeCache);
     }
-    return cache.rate;
+    return cache!.rate;
   }
 
   /// Uses the provided [client] if available, or creates a new one that gets

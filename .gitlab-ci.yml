@@ -1,4 +1,4 @@
-image: google/dart:2
+image: google/dart:2.14
 
 before_script:
 - export PATH="$PATH":"~/.pub-cache/bin"
@@ -10,9 +10,3 @@ test:
   script:
     - grind test
 
-publish:
-  stage: deploy
-  script:
-  - grind auto-publish
-  only:
-  - master@exitlive/frankfurter

@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.0
+
+- Null safety
+
 ## 1.0.0
 
 - Change `.getRate(from, to)` to named arguments: `.getRate(from: x, to: y)`
