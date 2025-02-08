@@ -21,7 +21,7 @@ class Frankfurter {
   Future<List<Rate>> latest({required Currency from, Set<Currency>? to}) async {
     Currency;
 
-    final url = this.url.replace(path: uri.path + 'latest', queryParameters: {
+    final url = this.url.replace(path: this.url.path + 'latest', queryParameters: {
       'from': from.code,
       if (to != null) 'to': to.map((currency) => currency.code).join(','),
     });
