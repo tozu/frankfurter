@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 
-const defaultUrl = 'https://www.frankfurter.app/';
+const defaultUrl = 'https://api.frankfurter.dev/v1/';
 
 class Frankfurter {
   /// Defaults to [defaultUrl]
